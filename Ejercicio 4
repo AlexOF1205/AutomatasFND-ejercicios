@@ -1,0 +1,109 @@
+package com.mycompany.automatas;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.*;
+
+
+public class AutomataFND1 {
+
+    private String estadoActual;
+    private String estadoInicial = "q0";
+    private final Set<String> estadosAceptacion = Set.of("q0q1q2q3", "q0q3q2", "q0q1q3", "q0q3");
+
+    private Map<String, Map<String, String>> transiciones;
+
+    public AutomataFND1(){
+
+        estadoActual = estadoInicial;
+        transiciones = new HashMap<>();
+        
+        
+        // Definir tabla de transiciones para estado A
+        Map<String, String> tranQ0 = new HashMap<>();
+        tranQ0.put("a", "q0q1");
+        tranQ0.put("b", "q0");
+        transiciones.put("q0",tranQ0);
+
+        // Definir transiciones para estado B
+        Map<String, String> tranQ1 = new HashMap<>();
+        tranQ1.put("a", "q0q1q2");
+        tranQ1.put("b", "q0q3");
+        transiciones.put("q0q1",tranQ1);
+
+        // Definir transiciones para estado C
+        Map<String, String> tranQ2 = new HashMap<>();
+        tranQ2.put("a", "q0q1q2q3");
+        tranQ2.put("b", "q0q3");
+        transiciones.put("q0q1q2",tranQ2);
+        
+        // Definir transiciones para estado D
+        Map<String, String> tranQ3 = new HashMap<>();
+        tranQ3.put("a", "q0q1q2q3");
+        tranQ3.put("b", "q0q2q3");
+        transiciones.put("q0q1q2q3",tranQ3);
+        
+        // Definir transiciones para estado E
+        Map<String, String> tranQ4 = new HashMap<>();
+        tranQ4.put("a", "q0q1q3");
+        tranQ4.put("b", "q0q2");
+        transiciones.put("q0q3q2",tranQ4);
+        
+        // Definir transiciones para estado F
+        Map<String, String> tranQ5 = new HashMap<>();
+        tranQ5.put("a", "q0q1q2");
+        tranQ5.put("b", "q0q3q2");
+        transiciones.put("q0q1q3",tranQ5);
+        
+        // Definir transiciones para estado G
+        Map<String, String> tranQ6 = new HashMap<>();
+        tranQ6.put("a", "q0q1q3");
+        tranQ6.put("b", "q0");
+        transiciones.put("q0q2",tranQ6);
+        
+        // Definir transiciones para estado H
+        Map<String, String> tranQ7 = new HashMap<>();
+        tranQ7.put("a", "q0q1");
+        tranQ7.put("b", "q0q2");
+        transiciones.put("q0q3",tranQ7);
+        
+    }
+    
+    public boolean procesarAutomata(String cadena){
+        estadoActual = estadoInicial;
+        for (int i = 0; i<cadena.length(); i++){
+            String simbolo = String.valueOf(cadena.charAt(i));
+            Map<String, String> mapaTransiciones = transiciones.get(estadoActual);
+
+            if (mapaTransiciones.containsKey(simbolo)){
+                estadoActual = mapaTransiciones.get(simbolo);
+            } else {
+                System.out.println("Simbolo no valido: " + simbolo);
+                return false;
+            }
+        }
+        return estadosAceptacion.contains(estadoActual);
+    }
+    
+    public static void main(String[] args) {
+        AutomataFND1 automataFND1 = new AutomataFND1();
+        /*
+        *Crear un objeto de clase Scanner para recibir datos
+        * desde consola
+         */
+
+        List<String> cadenasW = Arrays.asList("aaa", "ab", "abb", "abb");
+        automataFND1.validarCadenar(cadenasW);
+ 
+    }
+ 
+    public void validarCadenar(List<String> cadenasW) {
+        cadenasW.stream().forEach(cadena -> {
+            if (procesarAutomata(cadena)) {
+                System.out.println("Cadena valida:  " + cadena);
+            } else {
+                System.out.println("Cadena No valida:  " + cadena);
+            }
+        });
+    }
+}
