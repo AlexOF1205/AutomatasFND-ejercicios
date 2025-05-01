@@ -1,0 +1,78 @@
+package com.mycompany.automatas;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.*;
+
+
+public class AutomataFND2 {
+
+    private String estadoActual;
+    private String estadoInicial = "q0";
+    private final Set<String> estadosAceptacion = Set.of("q0q1q2");
+
+    private Map<String, Map<String, String>> transiciones;
+
+    public AutomataFND2(){
+
+        estadoActual = estadoInicial;
+        transiciones = new HashMap<>();
+        
+        
+        // Definir tabla de transiciones para estado A
+        Map<String, String> tranQ0 = new HashMap<>();
+        tranQ0.put("0", "q0q1");
+        tranQ0.put("1", "q0");
+        transiciones.put("q0",tranQ0);
+
+        // Definir transiciones para estado B
+        Map<String, String> tranQ1 = new HashMap<>();
+        tranQ1.put("0", "q0q1q2");
+        tranQ1.put("1", "q0");
+        transiciones.put("q0q1",tranQ1);
+
+        // Definir transiciones para estado C
+        Map<String, String> tranQ2 = new HashMap<>();
+        tranQ2.put("0", "q0q1q2");
+        tranQ2.put("1", "q0");
+        transiciones.put("q0q1q2",tranQ2);
+    }
+    
+    public boolean procesarAutomata(String cadena){
+        estadoActual = estadoInicial;
+        for (int i = 0; i<cadena.length(); i++){
+            String simbolo = String.valueOf(cadena.charAt(i));
+            Map<String, String> mapaTransiciones = transiciones.get(estadoActual);
+
+            if (mapaTransiciones.containsKey(simbolo)){
+                estadoActual = mapaTransiciones.get(simbolo);
+            } else {
+                System.out.println("Simbolo no valido: " + simbolo);
+                return false;
+            }
+        }
+        return estadosAceptacion.contains(estadoActual);
+    }
+    
+    public static void main(String[] args) {
+        AutomataFND2 automataFND1 = new AutomataFND2();
+        /*
+        *Crear un objeto de clase Scanner para recibir datos
+        * desde consola
+         */
+
+        List<String> cadenasW = Arrays.asList("000", "0100", "111", "1011");
+        automataFND1.validarCadenar(cadenasW);
+ 
+    }
+ 
+    public void validarCadenar(List<String> cadenasW) {
+        cadenasW.stream().forEach(cadena -> {
+            if (procesarAutomata(cadena)) {
+                System.out.println("Cadena valida:  " + cadena);
+            } else {
+                System.out.println("Cadena No valida:  " + cadena);
+            }
+        });
+    }
+}
